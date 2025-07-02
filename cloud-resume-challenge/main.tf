@@ -1,17 +1,37 @@
-resource "aws_s3_bucket" "test_bucket" {
-    bucket = "asoloa-crc-test-bucket"
-    force_destroy = true
-    tags = {
-        Name = "asoloa-crc-test-bucket"
-        Environment = "Test"
+# Main configuration file
+# Individual resources are organized in separate files:
+# - dns.tf: DNS and CAA records
+# - acm.tf: SSL/TLS certificates
+# - s3.tf: S3 bucket resources
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "6.0.0"
     }
+    hostinger = {
+      source  = "hostinger/hostinger"
+      version = "0.1.6"
+    }
+  }
 }
 
-resource "aws_s3_bucket_public_access_block" "test_bucket" {
-  bucket = aws_s3_bucket.test_bucket.id
+provider "aws" {
+  region     = "us-east-1"
+  access_key = var.access_key
+  secret_key = var.secret_key
+}
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+provider "hostinger" {
+  api_token = var.hostinger_api_token
+}
+
+# Local values (if any)
+locals {
+  common_tags = {
+    project     = "Cloud Resume Challenge"
+    environment = "asoloa.com"
+    managed_by  = "Terraform"
+  }
 }
