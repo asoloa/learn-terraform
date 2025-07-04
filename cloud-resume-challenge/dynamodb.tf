@@ -13,8 +13,7 @@ resource "aws_dynamodb_table_item" "first_view" {
   hash_key   = aws_dynamodb_table.visitor-count-table.hash_key
   item       = <<ITEM
     {
-        "id": {"S": "0"},
-        "view-count": {"N": "1"}
+      "id": {"S": "0"}
     }
     ITEM
 }

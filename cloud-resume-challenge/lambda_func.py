@@ -13,11 +13,18 @@ def lambda_handler(event, context):
     response = table.get_item(Key={
         env_table_pk: '0'
     })
-    views = response["Item"][env_table_item] + 1
-    response = table.put_item(
+
+    # Avoid KeyError by checking if `env_table_item` field exists in the response
+    if env_table_item in response["Item"]:
+        views = response["Item"][env_table_item] + 1
+    else:
+        views = 1
+
+    table.put_item(
         Item={
             env_table_pk: '0',
             env_table_item: views
         }
     )
+
     return views
